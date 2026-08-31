@@ -1,5 +1,12 @@
 (function(){
-  const form=document.getElementById("loginForm"),button=document.getElementById("loginButton"),error=document.getElementById("loginError");
+  const form=document.getElementById("loginForm"),button=document.getElementById("loginButton"),error=document.getElementById("loginError"),password=document.getElementById("password"),passwordToggle=document.getElementById("passwordToggle");
+  passwordToggle.addEventListener("click",()=>{
+    const visible=password.type==="password";
+    password.type=visible?"text":"password";
+    passwordToggle.setAttribute("aria-pressed",String(visible));
+    passwordToggle.setAttribute("aria-label",visible?"Ocultar senha":"Mostrar senha");
+    password.focus({preventScroll:true});
+  });
   form.addEventListener("submit",async event=>{
     event.preventDefault();error.textContent="";button.disabled=true;button.querySelector("span").textContent="Entrando…";
     try{

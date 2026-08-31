@@ -8,7 +8,8 @@ window.Lorah = window.Lorah || {};
   const icons={
     grid:'<svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6V11h-6v9Zm0-16v5h6V4h-6Z"/></svg>',
     chart:'<svg viewBox="0 0 24 24"><path d="M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm2 4v8h2V8H7Zm4 3v5h2v-5h-2Zm4-4v9h2V7h-2Z"/></svg>',
-    event:'<svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h3v17H4V4h3V2Zm11 8H6v9h12v-9ZM6 6v2h12V6H6Z"/></svg>'
+    event:'<svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h3v17H4V4h3V2Zm11 8H6v9h12v-9ZM6 6v2h12V6H6Z"/></svg>',
+    download:'<svg viewBox="0 0 24 24"><path d="M11 3h2v10.17l3.59-3.58L18 11l-6 6-6-6 1.41-1.41L11 13.17V3ZM5 19h14v2H5v-2Z"/></svg>'
   };
   const loaded=await Lorah.Storage.load();
   let dataset=loaded.dataset||{version:1,records:[],natureSections:{},natureOrder:[]};
@@ -54,7 +55,7 @@ window.Lorah = window.Lorah || {};
     $("breadcrumbPage").textContent=page.title.toLowerCase();
     document.title=`Lorah • ${page.title}`;
     renderStatus(records);
-    root.innerHTML=dataset.records.length?page.render(records,dataset):`<article class="card empty-state"><div class="empty-state-icon">⇩</div><h1>Nenhuma base importada</h1><p>Use <b>Importar dados</b> no menu lateral para carregar a primeira planilha financeira.</p></article>`;
+    root.innerHTML=dataset.records.length?page.render(records,dataset):`<article class="card empty-state"><div class="empty-state-icon">${icons.download}</div><h1>Nenhuma base importada</h1><p>Use <b>Importar dados</b> no menu lateral para carregar a primeira planilha financeira.</p></article>`;
     if(!dataset.records.length)return;
     page.bind?.(root,records,dataset);
   }

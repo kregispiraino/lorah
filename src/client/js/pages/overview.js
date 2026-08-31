@@ -36,7 +36,7 @@ Lorah.Pages.overview = {
           </article>
           <article class="card">
             ${U.sectionTitle("Últimos lançamentos","Movimentos econômicos mais recentes")}
-            <div class="transaction-list">${latest.map(r=>`<div><span class="transaction-icon ${r.value>=0?"in":"out"}">${r.value>=0?"↗":"↘"}</span><span class="transaction-main"><b>${U.esc(r.party||r.nature)}</b><small>${U.date(r.date)} • ${U.esc(r.nature)}</small></span><strong class="${r.value>=0?"amount-in":"amount-out"}">${U.money(r.value)}</strong></div>`).join("")}</div>
+            <div class="transaction-list">${latest.map(r=>`<div><span class="transaction-icon ${r.value>=0?"in":"out"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${r.value>=0?"M7 17 17 7M9 7h8v8":"M7 7l10 10M17 9v8H9"}"/></svg></span><span class="transaction-main"><b>${U.esc(r.party||r.nature)}</b><small>${U.date(r.date)} • ${U.esc(r.nature)}</small></span><strong class="${r.value>=0?"amount-in":"amount-out"}">${U.money(r.value)}</strong></div>`).join("")}</div>
           </article>
         </div>
       </div>`;

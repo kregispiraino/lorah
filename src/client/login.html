@@ -14,7 +14,16 @@
       <h1>Acesso</h1>
       <p class="intro">Informe suas credenciais para continuar.</p>
       <label><span>E-mail</span><input id="email" name="email" type="email" autocomplete="username" required autofocus></label>
-      <label><span>Senha</span><input id="password" name="password" type="password" autocomplete="current-password" required></label>
+      <div class="password-group">
+        <label for="password">Senha</label>
+        <span class="password-field">
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+          <button class="password-toggle" id="passwordToggle" type="button" aria-label="Mostrar senha" aria-pressed="false">
+            <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.75"/></svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M10.6 6.12A9.7 9.7 0 0 1 12 6c6 0 9.5 6 9.5 6a17.7 17.7 0 0 1-2.08 2.72M6.2 6.2C3.86 7.73 2.5 12 2.5 12s3.5 6 9.5 6a9.6 9.6 0 0 0 3.16-.53M9.88 9.88a3 3 0 0 0 4.24 4.24"/></svg>
+          </button>
+        </span>
+      </div>
       <div class="login-error" id="loginError" role="alert" aria-live="polite"></div>
       <button type="submit" id="loginButton"><span>Entrar</span></button>
       <small>Acesso restrito</small>
