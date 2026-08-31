@@ -92,7 +92,11 @@ window.Lorah = window.Lorah || {};
   };
 
   function applyTheme(theme){document.documentElement.dataset.theme=theme;localStorage.setItem("lorah-theme",theme);$("themeLabel").textContent=theme==="dark"?"Tema Escuro":"Tema Claro";$("mobileThemeLabel").textContent=$("themeLabel").textContent}
-  applyTheme(localStorage.getItem("lorah-theme")||"dark");
+  const themeDefaultVersion="light-v1";
+  const savedTheme=localStorage.getItem("lorah-theme");
+  const initialTheme=localStorage.getItem("lorah-theme-default-version")===themeDefaultVersion?(savedTheme||"light"):"light";
+  applyTheme(initialTheme);
+  localStorage.setItem("lorah-theme-default-version",themeDefaultVersion);
   $("themeToggle").onclick=()=>{applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");$("themeToggle").blur()};
   $("mobileThemeToggle").onclick=()=>{applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");closeMobile()};
   async function logout(){

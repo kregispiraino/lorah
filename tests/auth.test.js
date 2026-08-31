@@ -12,7 +12,7 @@ async function testApp() {
   const storage = { uploadsPath: directory, initialize: async () => {} };
   const pool = { query: async () => [[{ ok: 1 }]] };
   const authService = {
-    authenticate: async (email, password) => email === "financeiro@plexholding.com.br" && password === "correct-password"
+    authenticate: async (email, password) => email === "admin@example.com" && password === "correct-password"
       ? { id: 1, email, role: "admin" } : null
   };
   const datasetService = { getActive: async () => ({ dataset: null, metadata: null }) };
@@ -25,9 +25,9 @@ test("login válido cria sessão persistente e libera o dashboard", async (t) =>
   const { app, directory } = await testApp();
   t.after(() => fs.rm(directory, { recursive: true, force: true }));
   const agent = request.agent(app);
-  const login = await agent.post("/api/auth/login").send({ email: "financeiro@plexholding.com.br", password: "correct-password" });
+  const login = await agent.post("/api/auth/login").send({ email: "admin@example.com", password: "correct-password" });
   assert.equal(login.status, 200);
-  assert.equal(login.body.user.email, "financeiro@plexholding.com.br");
+  assert.equal(login.body.user.email, "admin@example.com");
   assert.match(login.headers["set-cookie"][0], /HttpOnly/);
   assert.match(login.headers["set-cookie"][0], /SameSite=Lax/);
   assert.equal((await agent.get("/")).status, 200);
@@ -36,7 +36,7 @@ test("login válido cria sessão persistente e libera o dashboard", async (t) =>
 test("login inválido usa mensagem genérica", async (t) => {
   const { app, directory } = await testApp();
   t.after(() => fs.rm(directory, { recursive: true, force: true }));
-  const response = await request(app).post("/api/auth/login").send({ email: "financeiro@plexholding.com.br", password: "wrong" });
+  const response = await request(app).post("/api/auth/login").send({ email: "admin@example.com", password: "wrong" });
   assert.equal(response.status, 401);
   assert.equal(response.body.error, "E-mail ou senha inválidos.");
 });

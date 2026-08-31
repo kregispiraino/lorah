@@ -24,7 +24,7 @@ function loadEnv(overrides = {}) {
     storagePath: path.resolve(env.DATA_STORAGE_PATH || "./storage"),
     trustProxy: positiveNumber(env.TRUST_PROXY, 1),
     maxUploadBytes: positiveNumber(env.MAX_UPLOAD_MB, 25) * 1024 * 1024,
-    initialAdminEmail: (env.INITIAL_ADMIN_EMAIL || "financeiro@plexholding.com.br").trim().toLowerCase(),
+    initialAdminEmail: (env.INITIAL_ADMIN_EMAIL || "admin@example.com").trim().toLowerCase(),
     initialAdminPassword: env.INITIAL_ADMIN_PASSWORD || ""
   };
 }
