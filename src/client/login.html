@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#17181a">
+  <title>Lorah • Entrar</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/lorah-favicon.svg">
+  <link rel="stylesheet" href="/login.css">
+</head>
+<body>
+  <main class="login-shell">
+    <section class="login-brand" aria-label="Lorah">
+      <div class="brand-glow"></div>
+      <img src="/assets/lorah-wordmark.svg" alt="Lorah">
+      <p>Inteligência financeira para decisões mais claras.</p>
+    </section>
+    <section class="login-panel">
+      <form class="login-card" id="loginForm" novalidate>
+        <div class="mobile-brand"><img src="/assets/lorah-wordmark.svg" alt="Lorah"></div>
+        <span class="eyebrow">Dashboard financeiro</span>
+        <h1>Bem-vinda de volta</h1>
+        <p class="intro">Entre com suas credenciais para acessar os dados financeiros.</p>
+        <label><span>E-mail</span><input id="email" name="email" type="email" autocomplete="username" required autofocus></label>
+        <label><span>Senha</span><input id="password" name="password" type="password" autocomplete="current-password" required></label>
+        <div class="login-error" id="loginError" role="alert" aria-live="polite"></div>
+        <button type="submit" id="loginButton"><span>Entrar</span></button>
+        <small>Acesso restrito • Lorah Financeiro</small>
+      </form>
+    </section>
+  </main>
+  <script src="/js/login.js"></script>
+</body>
+</html>

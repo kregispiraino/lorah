@@ -1,0 +1,16 @@
+.git
+.gitignore
+node_modules
+npm-debug.log*
+.env
+.env.*
+!.env.example
+storage/*
+!storage/.gitkeep
+*.xlsx
+*.xls
+*.csv
+*.dump
+coverage
+docs
+tests

@@ -1,0 +1,32 @@
+{
+  "name": "lorah-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard financeiro full-stack da Lorah",
+  "main": "src/server/index.js",
+  "scripts": {
+    "dev": "node --watch src/server/index.js",
+    "start": "node src/server/index.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "test": "node --test --test-concurrency=1"
+  },
+  "keywords": [],
+  "engines": { "node": ">=20" },
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "express-session": "^1.19.0",
+    "helmet": "^8.3.0",
+    "multer": "^2.3.0",
+    "mysql2": "^3.24.2",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": {
+    "supertest": "^7.2.2"
+  }
+}

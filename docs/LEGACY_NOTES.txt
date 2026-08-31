@@ -1,0 +1,25 @@
+LORAH — Dashboard Financeiro v7
+
+Atualizações:
+- DRE com detalhamento por clique:
+  • clique na Natureza = todos os registros que compõem o total;
+  • clique no valor de um mês = somente os registros daquele mês.
+- Tabela de detalhamento com Data, Histórico, Fornecedor/Cliente, Conta, Natureza, Evento e Valor.
+- Painel de filtros fecha ao clicar fora em todas as páginas.
+- Eventos (V) agora alimenta as receitas da página Eventos pela coluna “Total geral”.
+- Eventos (V) NÃO entra na DRE geral, evitando duplicar receitas de Rede/Pagarme.
+- Eventos (D) continua ignorada.
+
+- Lançamentos sem natureza: positivos = Receita sem natureza; negativos = Despesa sem natureza (Custo Indireto).
+
+- Filtro de Evento disponível em todas as páginas.
+  • Todos os registros
+  • Somente com evento identificado
+  • Sem evento identificado
+  • Eventos individuais encontrados na base
+
+- Regra de filtro por Evento atualizada:
+  • opção padrão: Não filtrar eventos;
+  • abaixo, somente a lista de eventos existentes;
+  • sem filtro: DRE e Visão Geral usam as receitas normais (Rede/Pagarme/Itaú etc.);
+  • com um evento selecionado: DRE e Visão Geral usam a receita correspondente da aba Eventos (V), enquanto as despesas vêm dos lançamentos vinculados ao evento.

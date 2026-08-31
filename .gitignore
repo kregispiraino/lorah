@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.*
+!.env.example
+storage/*
+!storage/.gitkeep
+*.xlsx
+*.xls
+*.csv
+*.sql.gz
+*.dump
+*.log
+coverage/
+.DS_Store
+.cache/
+tmp/
+uploads/
