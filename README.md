@@ -104,7 +104,7 @@ Acesse `http://localhost:3000`. O servidor escuta em `0.0.0.0` e respeita `PORT`
 
 1. Um administrador autenticado escolhe `.xlsx` ou `.xls` em **Importar dados** (a opção continua oculta no mobile).
 2. O backend recebe o arquivo em uma área temporária privada.
-3. O parser valida a estrutura mínima: aba `#` e ao menos uma aba financeira conhecida.
+3. O parser valida a estrutura mínima e lê o valor numérico bruto das células, sem depender da formatação regional exibida pelo Excel.
 4. `Eventos (D)` é descartada; as demais abas são normalizadas pelas regras em [docs/CALCULATIONS.md](docs/CALCULATIONS.md).
 5. O arquivo original e o JSON são escritos com nomes únicos e renomeados atomicamente.
 6. Só depois do sucesso no storage uma transação MySQL marca a nova base como ativa. Se parsing, escrita ou banco falharem, a base anterior continua ativa.

@@ -56,11 +56,18 @@ test("parser lê XLSX válido e rejeita estrutura sem abas mínimas", async (t) 
   const invalidPath = path.join(directory, "invalid.xlsx");
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(parsed([]).sheets["#"]), "#");
-  XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet([{ Liquidação: "01/01/2026", Natureza: "Receita de vendas", Valor: "10,00" }]), "Itaú");
+  const itau = XLSX.utils.json_to_sheet([
+    { Liquidação: "01/01/2026", Natureza: "Receita de vendas", Valor: 10 },
+    { Liquidação: "02/01/2026", Natureza: null, Valor: 128726.25 }
+  ]);
+  itau.C3.z = "#,##0.00;[Red]-#,##0.00";
+  XLSX.utils.book_append_sheet(workbook, itau, "Itaú");
   XLSX.writeFile(workbook, validPath);
   const invalid = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(invalid, XLSX.utils.json_to_sheet([{ Teste: 1 }]), "Outra");
   XLSX.writeFile(invalid, invalidPath);
-  assert.equal(new ExcelParser().parseFile(validPath, "ficticio.xlsx").records.length, 1);
+  const result = new ExcelParser().parseFile(validPath, "ficticio.xlsx");
+  assert.equal(result.records.length, 2);
+  assert.equal(result.records.find((record) => record.nature === "Receita sem natureza").value, 128726.25);
   assert.throws(() => new ExcelParser().parseFile(invalidPath, "invalido.xlsx"), /abas mínimas/);
 });

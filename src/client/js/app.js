@@ -32,7 +32,10 @@ window.Lorah = window.Lorah || {};
     buildNav(); render();
   }
   function filteredRecords(){
-    return Lorah.Finance.filtered(dataset.records,Lorah.Filters.get());
+    const filters=Lorah.Filters.get();
+    return currentPage==="events"
+      ?Lorah.Finance.filteredEvents(dataset.records,filters.event)
+      :Lorah.Finance.filtered(dataset.records,filters);
   }
   function renderStatus(records){
     if(!dataset.records.length){
@@ -47,6 +50,7 @@ window.Lorah = window.Lorah || {};
   }
   function render(){
     const page=Lorah.Pages[currentPage]||Lorah.Pages.overview, records=filteredRecords();
+    filterPanel.classList.toggle("events-only",currentPage==="events");
     $("breadcrumbPage").textContent=page.title.toLowerCase();
     document.title=`Lorah • ${page.title}`;
     renderStatus(records);
@@ -58,7 +62,7 @@ window.Lorah = window.Lorah || {};
     const opts=Lorah.Finance.available(dataset.records);
     $("natureFilter").innerHTML='<option value="">Todas</option>'+opts.natures.map(x=>`<option>${Lorah.UI.esc(x)}</option>`).join("");
     $("accountFilter").innerHTML='<option value="">Todas</option>'+opts.accounts.map(x=>`<option>${Lorah.UI.esc(x)}</option>`).join("");
-    $("eventFilter").innerHTML='<option value="">Não filtrar eventos</option>'+opts.events.map(x=>`<option value="${Lorah.UI.esc(x)}">${Lorah.UI.esc(x)}</option>`).join("");
+    $("eventFilter").innerHTML='<option value="">Todos os eventos</option>'+opts.events.map(x=>`<option value="${Lorah.UI.esc(x)}">${Lorah.UI.esc(x)}</option>`).join("");
   }
   function toggleFilter(open){
     const should=open??!filterPanel.classList.contains("open");filterPanel.classList.toggle("open",should);$("filterButton").setAttribute("aria-expanded",should);

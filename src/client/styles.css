@@ -94,6 +94,8 @@ html[data-theme=dark]{--bg:#17181a;--surface:#202123;--surface2:#25272a;--text:#
 .chart-tooltip b{font-size:9.5px;font-weight:650}
 
 .status-dot.empty{background:var(--muted)}
+.filter-panel.events-only .field:not(.event-filter-field){display:none}
+.filter-panel.events-only .filter-panel-head span{display:none}
 .empty-state{min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .empty-state-icon{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--violet) 12%,var(--surface));color:var(--violet);font-size:20px}
 .empty-state h1{margin:14px 0 5px;font-size:16px}

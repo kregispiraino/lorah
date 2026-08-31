@@ -24,6 +24,9 @@ Lorah.Finance = (() => {
       return true;
     });
   }
+  function filteredEvents(records,event=""){
+    return event?records.filter(r=>r.event===event):records.slice();
+  }
   function metrics(records){
     const dre=records.filter(isDRE);
     const revenue=dre.filter(r=>sectionOf(r)==="revenue").reduce((s,r)=>s+r.value,0);
@@ -85,5 +88,5 @@ Lorah.Finance = (() => {
       events:[...new Set(records.map(r=>r.event).filter(Boolean).map(x=>String(x).trim()))].sort((a,b)=>a.localeCompare(b,"pt-BR"))
     };
   }
-  return {money,monthFmt,monthLong,filtered,metrics,group,byMonth,years,natureMatrix,topExpenses,revenueByAccount,partyRanking,latest,available,isDRE,sectionOf};
+  return {money,monthFmt,monthLong,filtered,filteredEvents,metrics,group,byMonth,years,natureMatrix,topExpenses,revenueByAccount,partyRanking,latest,available,isDRE,sectionOf};
 })();

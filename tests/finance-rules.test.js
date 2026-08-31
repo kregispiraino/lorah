@@ -39,3 +39,15 @@ test("filtro de evento usa Eventos (V) como receita", () => {
   assert.equal(metrics.expenses, -200);
   assert.equal(metrics.result, 300);
 });
+
+test("página Eventos considera somente Todos ou um evento individual", () => {
+  const { engine } = finance();
+  const records = [
+    { event: "Evento A", section: "eventRevenue" },
+    { event: "Evento A", section: "direct" },
+    { event: "Evento B", section: "eventRevenue" },
+    { event: null, section: "revenue" }
+  ];
+  assert.equal(engine.filteredEvents(records).length, 4);
+  assert.equal(engine.filteredEvents(records, "Evento A").length, 2);
+});
