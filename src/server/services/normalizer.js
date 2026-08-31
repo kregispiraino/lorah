@@ -33,6 +33,11 @@ function isoDate(value) {
   return Number.isNaN(date.valueOf()) ? null : date.toISOString().slice(0, 10);
 }
 
+function eventMatchKey(value) {
+  return norm(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()
+    .replace(/[^A-Z0-9]+/g, " ").trim().replace(/^(EVENTO|FESTA|FEST)\s+/, "");
+}
+
 function findSheet(sheets, names) { return names.map((name) => sheets[name]).find(Boolean) || null; }
 
 function buildNatureMap(rows) {
@@ -74,7 +79,7 @@ function normalize(parsed, generatedAt = new Date().toISOString()) {
       records.push({ id: `${sourceName}-${index + 2}`, date, emissionDate: isoDate(pick(row, spec.columns.emission)), source: sourceName,
         account: spec.account, party: norm(pick(row, spec.columns.party)), history: norm(pick(row, spec.columns.history)),
         description: norm(pick(row, spec.columns.description)), nature: natureName, section, value,
-        event: norm(pick(row, spec.columns.event)) || null, kind: "ledger" });
+        kind: "ledger" });
     });
   }
 
@@ -88,15 +93,14 @@ function normalize(parsed, generatedAt = new Date().toISOString()) {
     const date = isoDate(pick(row, redeSales.columns.date));
     const gross = parseNumber(pick(row, redeSales.columns.gross));
     if (!date || gross === null) return;
-    const event = norm(pick(row, redeSales.columns.event)) || null;
     records.push({ id: `RedeV-${index + 2}`, date, emissionDate: date, source: "Rede (V)", account: "Rede", party: "Cliente Rede",
       history: [pick(row, redeSales.columns.modality), pick(row, redeSales.columns.brand)].filter(Boolean).join(" • "),
-      description: "Venda Rede", nature: "Receita de vendas", section: "revenue", value: gross, event, kind: "sale",
+      description: "Venda Rede", nature: "Receita de vendas", section: "revenue", value: gross, kind: "sale",
       netValue: parseNumber(pick(row, redeSales.columns.net)), mdr: parseNumber(pick(row, redeSales.columns.mdr)), machine: pick(row, redeSales.columns.machine) });
     const mdr = parseNumber(pick(row, redeSales.columns.mdr));
     if (mdr && mdr > 0) records.push({ id: `RedeV-MDR-${index + 2}`, date, source: "Rede (V)", account: "Rede", party: "Rede",
       history: "MDR sobre venda", description: "Taxa MDR", nature: "Tarifas bancárias", section: nature.map["Tarifas bancárias"] || "indirect",
-      value: -Math.abs(mdr), event, kind: "fee" });
+      value: -Math.abs(mdr), kind: "fee" });
   });
 
   const receipts = schema.sheets.redeReceipts;
@@ -106,18 +110,37 @@ function normalize(parsed, generatedAt = new Date().toISOString()) {
     if (!date || value === null) return;
     records.push({ id: `RedeR-${index + 2}`, date, source: "Rede (R)", account: "Rede", party: "Rede", history: "Recebimento de venda via Rede",
       description: "Liquidação Rede", nature: "Transferência entre contas", section: "movement", value,
-      event: norm(pick(row, receipts.columns.event)) || null, kind: "settlement" });
+      kind: "settlement" });
   });
 
   const eventSales = schema.sheets.eventSales;
+  const eventNames = new Map();
   (findSheet(sheets, eventSales.names) || []).forEach((row, index) => {
     const date = isoDate(pick(row, eventSales.columns.date));
     const value = parseNumber(pick(row, eventSales.columns.value));
     const event = norm(pick(row, eventSales.columns.event));
     if (!date || value === null || !event) return;
+    eventNames.set(eventMatchKey(event), event);
     records.push({ id: `EventosV-${index + 2}`, date, emissionDate: date, source: "Eventos (V)", account: "Eventos",
-      party: norm(pick(row, eventSales.columns.party)) || "Evento", history: norm(pick(row, eventSales.columns.history)) || `Receita do evento ${event}`,
-      description: "Receita por evento", nature: "Receita de eventos", section: "eventRevenue", value, event, kind: "event-sale" });
+      party: event, history: norm(pick(row, eventSales.columns.history)) || `Pedido ${norm(pick(row, eventSales.columns.order)) || index + 1}`,
+      description: "Receita por evento", nature: "Receita de eventos", section: "eventRevenue", value: Math.abs(value), event, kind: "event-sale",
+      order: norm(pick(row, eventSales.columns.order)) || null, grossValue: parseNumber(pick(row, eventSales.columns.gross)),
+      discount: parseNumber(pick(row, eventSales.columns.discount)) });
+  });
+
+  const eventExpenses = schema.sheets.eventExpenses;
+  (findSheet(sheets, eventExpenses.names) || []).forEach((row, index) => {
+    const date = isoDate(pick(row, eventExpenses.columns.date));
+    const value = parseNumber(pick(row, eventExpenses.columns.value));
+    const rawEvent = norm(pick(row, eventExpenses.columns.event));
+    if (!date || value === null || !rawEvent) return;
+    const event = eventNames.get(eventMatchKey(rawEvent)) || rawEvent;
+    const origin = norm(pick(row, eventExpenses.columns.origin));
+    records.push({ id: `EventosD-${index + 2}`, date, emissionDate: date, source: "Eventos (D)", account: "Eventos",
+      party: norm(pick(row, eventExpenses.columns.party)) || "Fornecedor do evento",
+      history: norm(pick(row, eventExpenses.columns.history)) || `Despesa do evento ${event}`,
+      description: origin, nature: origin || "Despesa de evento", section: "eventExpense", value: -Math.abs(value), event,
+      kind: "event-expense", origin: origin || null, fileSource: norm(pick(row, eventExpenses.columns.file)) || null });
   });
 
   const pagarme = schema.sheets.pagarme;
@@ -127,7 +150,7 @@ function normalize(parsed, generatedAt = new Date().toISOString()) {
     if (!date || value === null) return;
     records.push({ id: `Pagarme-${index + 2}`, date, source: "Pagarme", account: "Pagarme", party: norm(pick(row, pagarme.columns.party)) || "Pagarme",
       history: norm(pick(row, pagarme.columns.history)) || "Receita Pagarme", description: "", nature: "Receita de vendas", section: "revenue", value,
-      event: norm(pick(row, pagarme.columns.event)) || null, kind: "sale" });
+      kind: "sale" });
   });
 
   records.sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));

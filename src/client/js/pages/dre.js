@@ -59,7 +59,7 @@ Lorah.Pages.dre = {
         </div>
         <div class="table-scroll">
           <table class="detail-table">
-            <thead><tr><th>Data</th><th>Histórico</th><th>Fornecedor / Cliente</th><th>Conta</th><th>Natureza</th><th>Evento</th><th>Valor</th></tr></thead>
+            <thead><tr><th>Data</th><th>Histórico</th><th>Fornecedor / Cliente</th><th>Conta</th><th>Natureza</th><th>Valor</th></tr></thead>
             <tbody id="dreDetailBody"></tbody>
           </table>
         </div>
@@ -93,9 +93,8 @@ Lorah.Pages.dre = {
           <td>${U.esc(r.party||"—")}</td>
           <td>${U.esc(r.account||r.source||"—")}</td>
           <td>${U.esc(r.nature||"—")}</td>
-          <td>${U.esc(r.event||"—")}</td>
           <td class="${r.value<0?"negative-value":""}"><b>${U.money(r.value)}</b></td>
-        </tr>`).join(""):`<tr><td colspan="7" class="empty-cell">Nenhum registro encontrado.</td></tr>`;
+        </tr>`).join(""):`<tr><td colspan="6" class="empty-cell">Nenhum registro encontrado.</td></tr>`;
       card.hidden=false;
       card.scrollIntoView({behavior:"smooth",block:"start"});
     }

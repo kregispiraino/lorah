@@ -4,28 +4,24 @@ Lorah.Finance = (() => {
   const monthFmt=new Intl.DateTimeFormat("pt-BR",{month:"short"});
   const monthLong=new Intl.DateTimeFormat("pt-BR",{month:"long"});
   const absExpense=r=>sectionOf(r)==="direct"||sectionOf(r)==="indirect";
-  function sectionOf(r){
-    const eventSelected=Boolean(Lorah.Filters?.get?.().event);
-    if(eventSelected && r.section==="eventRevenue") return "revenue";
-    if(eventSelected && r.section==="revenue") return "eventExcluded";
-    return r.section;
-  }
+  const isEvent=r=>r.section==="eventRevenue"||r.section==="eventExpense";
+  const sectionOf=r=>r.section;
   const isDRE=r=>["revenue","direct","indirect"].includes(sectionOf(r));
 
   function filtered(records,f={}){
     const party=(f.party||"").trim().toLowerCase();
-    return records.filter(r=>{
+    return records.filter(r=>!isEvent(r)).filter(r=>{
       if(f.start&&r.date<f.start) return false;
       if(f.end&&r.date>f.end) return false;
       if(f.nature&&r.nature!==f.nature) return false;
       if(f.account&&r.account!==f.account) return false;
-      if(f.event&&r.event!==f.event) return false;
       if(party&&!`${r.party} ${r.history} ${r.description}`.toLowerCase().includes(party)) return false;
       return true;
     });
   }
   function filteredEvents(records,event=""){
-    return event?records.filter(r=>r.event===event):records.slice();
+    const eventRecords=records.filter(isEvent);
+    return event?eventRecords.filter(r=>r.event===event):eventRecords;
   }
   function metrics(records){
     const dre=records.filter(isDRE);
@@ -82,10 +78,12 @@ Lorah.Finance = (() => {
     return records.filter(isDRE).slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,limit);
   }
   function available(records){
+    const financial=records.filter(r=>!isEvent(r));
+    const events=records.filter(isEvent);
     return {
-      natures:[...new Set(records.map(r=>r.nature).filter(Boolean))].sort(),
-      accounts:[...new Set(records.map(r=>r.account).filter(Boolean))].sort(),
-      events:[...new Set(records.map(r=>r.event).filter(Boolean).map(x=>String(x).trim()))].sort((a,b)=>a.localeCompare(b,"pt-BR"))
+      natures:[...new Set(financial.map(r=>r.nature).filter(Boolean))].sort(),
+      accounts:[...new Set(financial.map(r=>r.account).filter(Boolean))].sort(),
+      events:[...new Set(events.map(r=>r.event).filter(Boolean).map(x=>String(x).trim()))].sort((a,b)=>a.localeCompare(b,"pt-BR"))
     };
   }
   return {money,monthFmt,monthLong,filtered,filteredEvents,metrics,group,byMonth,years,natureMatrix,topExpenses,revenueByAccount,partyRanking,latest,available,isDRE,sectionOf};

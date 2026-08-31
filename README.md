@@ -105,7 +105,7 @@ Acesse `http://localhost:3000`. O servidor escuta em `0.0.0.0` e respeita `PORT`
 1. Um administrador autenticado escolhe `.xlsx` ou `.xls` em **Importar dados** (a opção continua oculta no mobile).
 2. O backend recebe o arquivo em uma área temporária privada.
 3. O parser valida a estrutura mínima e lê o valor numérico bruto das células, sem depender da formatação regional exibida pelo Excel.
-4. `Eventos (D)` é descartada; as demais abas são normalizadas pelas regras em [docs/CALCULATIONS.md](docs/CALCULATIONS.md).
+4. As abas financeiras e as abas `Eventos (V)`/`Eventos (D)` são normalizadas em fluxos separados pelas regras em [docs/CALCULATIONS.md](docs/CALCULATIONS.md).
 5. O arquivo original e o JSON são escritos com nomes únicos e renomeados atomicamente.
 6. Só depois do sucesso no storage uma transação MySQL marca a nova base como ativa. Se parsing, escrita ou banco falharem, a base anterior continua ativa.
 7. A aplicação lê a última base ativa em cada navegador/dispositivo e mostra discretamente arquivo e horário da atualização.
@@ -114,15 +114,13 @@ Arquivos antigos são mantidos como histórico físico e metadados inativos. Def
 
 ## Regras financeiras preservadas
 
-- `Eventos (D)` é ignorada.
-- `Eventos (V)` fornece faturamento por evento.
-- Sem filtro de evento, DRE e Visão Geral usam as receitas normais da empresa e excluem `Eventos (V)`.
-- Com evento selecionado, DRE e Visão Geral usam somente a receita de `Eventos (V)` daquele evento; despesas vêm dos lançamentos vinculados.
+- `Eventos (V)` fornece o faturamento por evento pela coluna `Valor final`.
+- `Eventos (D)` fornece as despesas por evento.
+- DRE e Visão Geral usam somente as abas financeiras principais e não possuem filtro por evento.
+- A página Eventos usa exclusivamente `Eventos (V)` e `Eventos (D)`.
 - MOVIMENTAÇÃO nunca entra como receita, despesa ou resultado.
 - Receita sem natureza vira `Receita sem natureza`; despesa sem natureza vira `Despesa sem natureza` em Custo Indireto.
 - Rede (V), Rede (R), Pagarme, Itaú, Cartão e Caixa seguem [docs/CALCULATIONS.md](docs/CALCULATIONS.md).
-
-Durante a profissionalização foi identificada uma inconsistência: a documentação e a regra solicitada determinavam substituir receitas normais por `Eventos (V)` quando havia filtro, mas a implementação anterior podia somar ambas. O comportamento foi alinhado à regra documentada para impedir duplicidade.
 
 ## Testes
 
@@ -131,7 +129,7 @@ npm test
 npm audit
 ```
 
-Os testes cobrem login válido e inválido, sessão/rota protegida, importação sem autenticação, parser XLSX, normalizador, MOVIMENTAÇÃO, naturezas vazias e receita de `Eventos (V)` com filtro.
+Os testes cobrem login válido e inválido, sessão/rota protegida, importação sem autenticação, parser XLSX, normalizador, MOVIMENTAÇÃO, naturezas vazias e isolamento das abas de eventos.
 
 ## Docker
 

@@ -18,8 +18,9 @@ function parsed(rows) {
         { Naturezas: "***___CUSTO INDIRETO___***" }, { Naturezas: "Aluguel" }
       ],
       "Itaú": rows,
-      "Eventos (V)": [{ Data: "10/01/2026", Evento: "Evento Fictício", "Total geral": "R$ 2.000,00" }],
-      "Eventos (D)": [{ Data: "10/01/2026", Evento: "Ignorado", Valor: "999999" }]
+      "Eventos (V)": [{ Pedido: 123, "Data do pedido": "10/01/2026", "Nome do evento": "Evento Fictício", Total: "R$ 2.100,00", Desconto: "R$ 100,00", "Valor final": "R$ 2.000,00" }],
+      "Eventos (D)": [{ Evento: "Fictício", Liquidação: "11/01/2026", "Fornecedor/Cliente": "Fornecedor", Histórico: "Montagem", Valor: "500,00", "Origem/Meio": "Itaú PJ - PIX" }],
+      "Eventos (V)X": [{ Data: "10/01/2026", Evento: "Modelo antigo", "Total geral": "999999" }]
     }
   };
 }
@@ -35,8 +36,13 @@ function normalizedRules() {
 test("normalizador classifica MOVIMENTAÇÃO para exclusão da DRE", () => {
   const dataset = normalizedRules();
   assert.equal(dataset.records.find((record) => record.id === "Itaú-2").section, "movement");
-  assert.equal(dataset.records.some((record) => record.event === "Ignorado"), false);
-  assert.equal(dataset.records.find((record) => record.source === "Eventos (V)").section, "eventRevenue");
+  assert.equal(dataset.records.some((record) => record.event === "Modelo antigo"), false);
+  const revenue = dataset.records.find((record) => record.source === "Eventos (V)");
+  const expense = dataset.records.find((record) => record.source === "Eventos (D)");
+  assert.deepEqual({ section: revenue.section, value: revenue.value, order: revenue.order }, { section: "eventRevenue", value: 2000, order: "123" });
+  assert.deepEqual({ section: expense.section, value: expense.value, origin: expense.origin }, { section: "eventExpense", value: -500, origin: "Itaú PJ - PIX" });
+  assert.equal(expense.event, "Evento Fictício");
+  assert.equal(dataset.records.filter((record) => record.event).length, 2);
 });
 
 test("lançamento positivo sem natureza vira Receita sem natureza", () => {

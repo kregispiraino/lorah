@@ -43,11 +43,13 @@ window.Lorah = window.Lorah || {};
       $("dataStatus").innerHTML='<span class="status-dot empty"></span><span>Nenhuma base financeira importada</span>';
       return;
     }
-    const max=dataset.records.reduce((m,r)=>r.date>m?r.date:m,""),min=dataset.records.reduce((m,r)=>!m||r.date<m?r.date:m,"");
-    const f=Lorah.Filters.get(),filtered=Boolean(f.start||f.end||f.nature||f.account||f.event||f.party);
-    const eventLabel=f.event||"";
+    const f=Lorah.Filters.get();
+    const baseRecords=currentPage==="events"?Lorah.Finance.filteredEvents(dataset.records):Lorah.Finance.filtered(dataset.records,{});
+    const max=baseRecords.reduce((m,r)=>r.date>m?r.date:m,""),min=baseRecords.reduce((m,r)=>!m||r.date<m?r.date:m,"");
+    const filtered=currentPage==="events"?Boolean(f.event):Boolean(f.start||f.end||f.nature||f.account||f.party);
+    const eventLabel=currentPage==="events"?(f.event||""):"";
     const updated=datasetMetadata?.importedAt?new Date(datasetMetadata.importedAt).toLocaleString("pt-BR"):"";
-    $("dataStatus").innerHTML=`<span class="status-dot"></span><span><b>${filtered?records.length:dataset.records.length}</b> registros • ${Lorah.UI.date(f.start||min)} — ${Lorah.UI.date(f.end||max)}</span>${eventLabel?`<span class="status-filter-chip">Evento: ${Lorah.UI.esc(eventLabel)}</span>`:""}<span class="status-source">${Lorah.UI.esc(dataset.sourceFile||"Base financeira")}${updated?` • atualizada em ${Lorah.UI.esc(updated)}`:""}</span>`;
+    $("dataStatus").innerHTML=`<span class="status-dot"></span><span><b>${filtered?records.length:baseRecords.length}</b> registros • ${Lorah.UI.date(currentPage==="events"?min:(f.start||min))} — ${Lorah.UI.date(currentPage==="events"?max:(f.end||max))}</span>${eventLabel?`<span class="status-filter-chip">Evento: ${Lorah.UI.esc(eventLabel)}</span>`:""}<span class="status-source">${Lorah.UI.esc(dataset.sourceFile||"Base financeira")}${updated?` • atualizada em ${Lorah.UI.esc(updated)}`:""}</span>`;
   }
   function render(){
     const page=Lorah.Pages[currentPage]||Lorah.Pages.overview, records=filteredRecords();

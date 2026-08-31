@@ -10,10 +10,12 @@ Cada linha relevante das abas é convertida para:
 - `history`
 - `description`
 - `nature`
-- `section`: revenue | movement | direct | indirect | unclassified
+- `section`: revenue | movement | direct | indirect | unclassified | eventRevenue | eventExpense
 - `value`
 - `event`
 - `kind`
+
+Registros `eventRevenue` e `eventExpense` são exclusivos da página Eventos. Os demais registros alimentam Visão Geral e DRE.
 
 Campos específicos (como MDR, valor líquido e maquininha) podem ser mantidos sem alterar as páginas.
 

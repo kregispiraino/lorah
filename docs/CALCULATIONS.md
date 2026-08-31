@@ -33,13 +33,12 @@ Resultado = Receitas + Custos diretos + Custos indiretos.
 Como despesas estão negativas, a soma produz o resultado líquido.
 
 ## Eventos
-- `Eventos (V)` é usado como fonte de faturamento por evento.
-- Receita do evento = coluna `Total geral`.
-- Sem filtro de evento, essa receita não entra na DRE/Visão Geral, evitando duplicidade com Rede/Pagarme.
-- Com evento selecionado, essa receita substitui as receitas normais na DRE/Visão Geral.
-- Despesas continuam vindo das abas financeiras principais pelo campo `Evento`.
-- `Eventos (D)` continua ignorada.
-- Na página Eventos, os dados podem ser exibidos para todos os eventos ou para um evento individual; filtros de Conta, Natureza e Fornecedor não removem a receita de `Eventos (V)` dessa página.
+- A página Eventos usa exclusivamente `Eventos (V)` e `Eventos (D)`.
+- Receita do evento = `Valor final` de `Eventos (V)`; data = `Data do pedido`; evento = `Nome do evento`.
+- Despesa do evento = `Valor` de `Eventos (D)`; data = `Liquidação`; o valor é normalizado como saída.
+- Visão Geral e DRE ignoram completamente as duas abas de eventos e não oferecem filtro por evento.
+- O filtro da página Eventos alterna entre o consolidado de todos os eventos e um evento individual.
+- `Eventos (V)X` é apenas a referência do formato antigo e é ignorada.
 
 
 ## Lançamentos sem Natureza
