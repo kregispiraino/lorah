@@ -39,7 +39,6 @@ Lorah.Pages.dre = {
     body+=tr({nature:"RESULTADO LÍQUIDO",months:monthly.map(x=>x.result),total:monthly.reduce((s,x)=>s+x.result,0)},"dre-net",false);
 
     return `<div class="dashboard-stack">
-      <div class="page-inline-title"><div><h1>DRE • ${year}</h1><p>Visão econômica mensal por natureza. Clique em uma natureza ou em um valor mensal para abrir os lançamentos.</p></div></div>
       <div class="kpi-grid">
         ${U.kpi("Receita",U.money(m.revenue),"Receitas reconhecidas no período","revenue")}
         ${U.kpi("Custos diretos",U.money(Math.abs(m.direct)),"Ligados à operação/venda","expense")}
@@ -47,7 +46,7 @@ Lorah.Pages.dre = {
         ${U.kpi("Resultado líquido",U.money(m.result),`Margem ${U.pct(m.margin)}`,m.result>=0?"positive":"negative")}
       </div>
       <article class="card dre-card">
-        ${U.sectionTitle("Demonstrativo mensal","Valores organizados pelas naturezas definidas na base")}
+        ${U.sectionTitle(`Demonstrativo mensal • ${year}`,"Valores organizados pelas naturezas definidas na base")}
         <div class="table-scroll">
           <table class="dre-table"><thead><tr><th>Natureza</th>${monthHead.map(m=>`<th>${m}</th>`).join("")}<th>Total</th></tr></thead><tbody>${body}</tbody></table>
         </div>
