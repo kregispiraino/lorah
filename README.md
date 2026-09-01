@@ -29,7 +29,7 @@ tests/                    testes de integração e regras financeiras
 docs/                     arquitetura, modelo e cálculos
 ```
 
-O Excel permanece como fonte financeira. O MySQL guarda usuários, sessões e metadados das importações. O arquivo original e um cache JSON normalizado são privados no filesystem persistente. A classe `FileStorage` isola essa implementação para permitir futura troca por S3, R2 ou outro object storage.
+O Excel permanece como fonte financeira. O MySQL guarda usuários, sessões e o metadado da base ativa. O arquivo original e um cache JSON normalizado compactado são privados no filesystem persistente. A classe `FileStorage` isola essa implementação para permitir futura troca por S3, R2 ou outro object storage.
 
 ## Requisitos
 
@@ -106,13 +106,13 @@ Acesse `http://localhost:3000`. O servidor escuta em `0.0.0.0` e respeita `PORT`
 2. O backend recebe o arquivo em uma área temporária privada.
 3. O parser valida a estrutura mínima e lê o valor numérico bruto das células, sem depender da formatação regional exibida pelo Excel.
 4. As abas financeiras e as abas `Eventos (V)`/`Eventos (D)` são normalizadas em fluxos separados pelas regras em [docs/CALCULATIONS.md](docs/CALCULATIONS.md).
-5. O arquivo original e o JSON são escritos com nomes únicos e renomeados atomicamente.
+5. O arquivo original e o JSON compactado são escritos com nomes únicos e renomeados atomicamente.
 6. Só depois do sucesso no storage uma transação MySQL marca a nova base como ativa. Se parsing, escrita ou banco falharem, a base anterior continua ativa.
 7. A aplicação lê a última base ativa em cada navegador/dispositivo e mostra discretamente arquivo e horário da atualização.
 
 Quando o modelo normalizado muda, a base ativa antiga é renormalizada automaticamente a partir do Excel original armazenado. Assim, correções de leitura também alcançam a base já publicada sem exigir um novo upload.
 
-Arquivos antigos são mantidos como histórico físico e metadados inativos. Defina uma política de retenção/backup antes de automatizar sua remoção.
+A retenção é de uma única base: depois que a nova importação é ativada com sucesso, todos os arquivos e metadados anteriores são removidos. A limpeza também elimina históricos acumulados por versões antigas da aplicação.
 
 ## Regras financeiras preservadas
 

@@ -27,4 +27,4 @@ Campos específicos (como MDR, valor líquido e maquininha) podem ser mantidos s
 
 ## Metadados persistidos
 
-Cada importação registra no MySQL: identificador, nome original, nomes privados no storage, SHA-256, quantidade de registros, usuário, data/hora e estado ativo. O conteúdo dos lançamentos permanece no Excel/JSON do Volume nesta fase.
+O MySQL mantém apenas o metadado da base ativa: identificador, nome original, nomes privados no storage, SHA-256, quantidade de registros, usuário e data/hora. O Volume mantém somente o Excel ativo e seu cache JSON compactado; ambos são substituídos após cada importação bem-sucedida.

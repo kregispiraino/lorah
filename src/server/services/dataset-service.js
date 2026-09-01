@@ -5,6 +5,19 @@ class DatasetService {
     this.datasets = datasetRepository;
     this.storage = storage;
     this.parser = parser;
+    this.cleanedDatasetId = null;
+  }
+
+  async cleanupInactive(active) {
+    if (this.cleanedDatasetId === active.id) return;
+    try {
+      const inactive = await this.datasets.findInactive();
+      await Promise.all(inactive.map((dataset) => this.storage.remove(dataset)));
+      await this.datasets.deleteInactive();
+      this.cleanedDatasetId = active.id;
+    } catch (error) {
+      console.warn("Não foi possível concluir a limpeza das bases antigas:", error.message);
+    }
   }
 
   async getActive() {
@@ -17,6 +30,7 @@ class DatasetService {
       await this.datasets.updateRecordCount(metadata.id, dataset.records.length);
       metadata.recordCount = dataset.records.length;
     }
+    await this.cleanupInactive(metadata);
     return { dataset, metadata };
   }
 
@@ -26,9 +40,10 @@ class DatasetService {
     const stored = await this.storage.persist(file.path, safeOriginalName, dataset);
     try {
       const metadata = await this.datasets.activate({ ...stored, importedBy: userId });
+      await this.cleanupInactive(metadata);
       return { dataset, metadata };
     } catch (error) {
-      await this.storage.remove(stored);
+      await this.storage.remove(stored).catch(() => {});
       throw error;
     }
   }

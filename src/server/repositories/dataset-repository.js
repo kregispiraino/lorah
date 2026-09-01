@@ -37,6 +37,18 @@ class DatasetRepository {
   async updateRecordCount(id, recordCount) {
     await this.pool.execute("UPDATE datasets SET record_count = ? WHERE id = ?", [recordCount, id]);
   }
+
+  async findInactive() {
+    const [rows] = await this.pool.execute(
+      `SELECT id, stored_filename AS storedFileName, json_filename AS jsonFileName
+       FROM datasets WHERE is_active = 0`
+    );
+    return rows;
+  }
+
+  async deleteInactive() {
+    await this.pool.execute("DELETE FROM datasets WHERE is_active = 0");
+  }
 }
 
 module.exports = { DatasetRepository };
