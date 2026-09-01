@@ -49,6 +49,18 @@ class FileStorage {
     return JSON.parse(await fs.readFile(this.resolveStored(jsonFileName), "utf8"));
   }
 
+  async replaceDataset(jsonFileName, dataset) {
+    const target = this.resolveStored(jsonFileName);
+    const temporary = `${target}.${crypto.randomUUID()}.part`;
+    try {
+      await fs.writeFile(temporary, JSON.stringify(dataset), { flag: "wx", mode: 0o600 });
+      await fs.rename(temporary, target);
+    } catch (error) {
+      await fs.unlink(temporary).catch(() => {});
+      throw error;
+    }
+  }
+
   async remove(metadata) {
     await Promise.allSettled([
       fs.unlink(this.resolveStored(metadata.storedFileName)),

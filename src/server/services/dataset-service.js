@@ -10,7 +10,13 @@ class DatasetService {
   async getActive() {
     const metadata = await this.datasets.findActive();
     if (!metadata) return { dataset: null, metadata: null };
-    const dataset = await this.storage.readDataset(metadata.jsonFileName);
+    let dataset = await this.storage.readDataset(metadata.jsonFileName);
+    if (dataset.version !== 2) {
+      dataset = this.parser.parseFile(this.storage.resolveStored(metadata.storedFileName), metadata.originalFileName);
+      await this.storage.replaceDataset(metadata.jsonFileName, dataset);
+      await this.datasets.updateRecordCount(metadata.id, dataset.records.length);
+      metadata.recordCount = dataset.records.length;
+    }
     return { dataset, metadata };
   }
 

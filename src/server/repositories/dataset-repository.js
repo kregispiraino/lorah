@@ -33,6 +33,10 @@ class DatasetRepository {
     }
     return this.findActive();
   }
+
+  async updateRecordCount(id, recordCount) {
+    await this.pool.execute("UPDATE datasets SET record_count = ? WHERE id = ?", [recordCount, id]);
+  }
 }
 
 module.exports = { DatasetRepository };

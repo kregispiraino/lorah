@@ -110,6 +110,8 @@ Acesse `http://localhost:3000`. O servidor escuta em `0.0.0.0` e respeita `PORT`
 6. Só depois do sucesso no storage uma transação MySQL marca a nova base como ativa. Se parsing, escrita ou banco falharem, a base anterior continua ativa.
 7. A aplicação lê a última base ativa em cada navegador/dispositivo e mostra discretamente arquivo e horário da atualização.
 
+Quando o modelo normalizado muda, a base ativa antiga é renormalizada automaticamente a partir do Excel original armazenado. Assim, correções de leitura também alcançam a base já publicada sem exigir um novo upload.
+
 Arquivos antigos são mantidos como histórico físico e metadados inativos. Defina uma política de retenção/backup antes de automatizar sua remoção.
 
 ## Regras financeiras preservadas

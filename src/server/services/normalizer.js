@@ -154,7 +154,7 @@ function normalize(parsed, generatedAt = new Date().toISOString()) {
   });
 
   records.sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
-  return { version: 1, generatedAt, sourceFile: parsed.fileName, ignoredSheets: schema.ignoredSheets,
+  return { version: 2, generatedAt, sourceFile: parsed.fileName, ignoredSheets: schema.ignoredSheets,
     natureSections: nature.map, natureOrder: nature.order, records };
 }
 
